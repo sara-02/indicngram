@@ -20,11 +20,34 @@
 #
 import indicsyllabifier
 
-
 class Ngram:
     """
     Ngram class.You need to create an object to use the function
     """
+    @classmethod
+    def textWindowing(cls, entity_list, entity_count, window_size):
+        """
+        :entity: Can be a word, sentence or characters
+        :param entity_list: The list to be split into ngrams.
+        :param entity_count: Total count of the entity present
+        :param window_size: window size to be used while making the ngrams.
+        :type window_size: int.
+        :returns: list of text windowed ngrams.
+        """
+        window_size = int(window_size)
+        if entity_count == 0 or window_size < 0:
+            return []
+        ngrams = []
+        window_start = 0
+        window_end = 0
+        while window_start + window_size <= entity_count:
+            if(window_start + window_size < entity_count):
+                window_end = window_start + window_size
+            else:
+                window_end = entity_count
+            ngrams.append(entity_list[window_start:window_end])
+            window_start = window_start + 1
+        return ngrams
 
     def syllableNgram(self, text, window_size=2):
         """
@@ -34,7 +57,6 @@ class Ngram:
         :type window_size: int.
         :returns: list of syllable ngrams.
         """
-        window_size = int(window_size)
         words = text.split(" ")
         ngrams = []
         for word in words:
@@ -42,15 +64,7 @@ class Ngram:
             # TODO-Normalize before taking ngram!!!
             syllables = s.syllabify(word)
             syllable_count = len(syllables)
-            window_start = 0
-            window_end = 0
-            while window_start + window_size <= syllable_count:
-                if(window_start + window_size < syllable_count):
-                    window_end = window_start + window_size
-                else:
-                    window_end = syllable_count
-                ngrams.append(syllables[window_start:window_end])
-                window_start = window_start + 1
+            ngrams += Ngram.textWindowing(syllables, syllable_count, window_size)
         return ngrams
 
     def letterNgram(self, word, window_size=2):
@@ -61,21 +75,10 @@ class Ngram:
         :type window_size: int.
         :returns: list of ngrams.
         """
-        window_size = int(window_size)
         word = word.strip()
-        ngrams = []
         # TODO-Normalize before taking ngram!!!
         letter_count = len(word)
-        window_start = 0
-        window_end = 0
-        while window_start + window_size <= letter_count:
-            if(window_start + window_size < letter_count):
-                window_end = window_start + window_size
-            else:
-                window_end = letter_count
-            ngrams.append(word[window_start:window_end])
-            window_start = window_start + 1
-        return ngrams
+        return Ngram.textWindowing(word, letter_count, window_size)
 
     def wordNgram(self, text, window_size=2):
         """
@@ -85,21 +88,10 @@ class Ngram:
         :type window_size: int.
         :returns: list of word ngrams.
         """
-        window_size = int(window_size)
+
         words = text.split()
-        ngrams = []
         word_count = len(words)
-        window_start = 0
-        window_end = 0
-        while window_start + window_size <= word_count:
-            if(window_start + window_size < word_count):
-                window_end = window_start + window_size
-            else:
-                window_end = word_count
-            words[window_start:window_end]
-            ngrams.append(words[window_start:window_end])
-            window_start = window_start + 1
-        return ngrams
+        return Ngram.textWindowing(words, word_count, window_size)
 
     def get_module_name(self):
         """
