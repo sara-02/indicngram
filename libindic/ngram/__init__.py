@@ -20,6 +20,7 @@
 #
 import indicsyllabifier
 
+
 class Ngram:
     """
     Ngram class.You need to create an object to use the function
@@ -64,7 +65,9 @@ class Ngram:
             # TODO-Normalize before taking ngram!!!
             syllables = s.syllabify(word)
             syllable_count = len(syllables)
-            ngrams += Ngram.textWindowing(syllables, syllable_count, window_size)
+            ngrams += Ngram.textWindowing(syllables,
+                                          syllable_count,
+                                          window_size)
         return ngrams
 
     def letterNgram(self, word, window_size=2):
